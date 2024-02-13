@@ -4,7 +4,9 @@ import com.example.microservice.dto.TrainerWorkloadDTO;
 import com.example.microservice.entity.TrainingItem;
 import com.example.microservice.entity.enums.ActionType;
 import com.example.microservice.repository.TrainingItemRepository;
+import com.example.microservice.repository.TrainingItemSummaryRepository;
 import com.example.microservice.service.TrainingItemService;
+import com.example.microservice.service.TrainingItemSummaryService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,13 +14,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TrainingItemServiceImpl  implements TrainingItemService {
+public class TrainingItemServiceImpl implements TrainingItemService {
 
     private final TrainingItemRepository trainingItemRepository;
 
+    private final TrainingItemSummaryService trainingItemSummaryService;
 
-    public TrainingItemServiceImpl(TrainingItemRepository trainingItemRepository) {
+    public TrainingItemServiceImpl(TrainingItemRepository trainingItemRepository, TrainingItemSummaryService trainingItemSummaryService) {
         this.trainingItemRepository = trainingItemRepository;
+        this.trainingItemSummaryService = trainingItemSummaryService;
     }
 
     @Override
@@ -38,6 +42,7 @@ public class TrainingItemServiceImpl  implements TrainingItemService {
                 .trainingDate(trainingDate)
                 .trainingDuration(trainingDuration)
                 .build());
+
         } else if (actionType == ActionType.DELETE) {
             trainingItemRepository.deleteByTrainerUserNameAndTrainerFirstNameAndTrainerLastNameAndIsActiveAndTrainingDateAndTrainingDuration(
                 trainerUserName,
@@ -47,26 +52,8 @@ public class TrainingItemServiceImpl  implements TrainingItemService {
                 trainingDate,
                 trainingDuration);
         }
+        trainingItemSummaryService.updateTrainingItemSummary(trainerUserName, trainerFirstName, trainerLastName, isActive, trainingDate, trainingDuration, actionType);
     }
 
-    @Override
-    public TrainerWorkloadDTO getTrainerWorkload(String trainerUserName) {
-        List<TrainingItem> allByTrainerUserName = trainingItemRepository.findAllByTrainerUserName(trainerUserName);
-        if (!allByTrainerUserName.isEmpty()) {
-            return TrainerWorkloadDTO.builder()
-                .trainerUserName(allByTrainerUserName.get(0).getTrainerUserName())
-                .trainerFirstName(allByTrainerUserName.get(0).getTrainerFirstName())
-                .trainerLastName(allByTrainerUserName.get(0).getTrainerLastName())
-                .status(allByTrainerUserName.get(0).isActive())
-                .workload(allByTrainerUserName.stream().collect(Collectors.groupingBy(
-                    item -> item.getTrainingDate().getYear(),
-                    Collectors.groupingBy(
-                        el -> el.getTrainingDate().getMonthValue(),
-                        Collectors.summingLong(TrainingItem::getTrainingDuration))
-                )))
-                .build();
-        }
-        return TrainerWorkloadDTO.builder().build();
-    }
 
 }

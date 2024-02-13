@@ -3,6 +3,7 @@ package com.example.microservice.controller;
 import com.example.microservice.dto.TrainerWorkloadDTO;
 import com.example.microservice.entity.enums.ActionType;
 import com.example.microservice.service.TrainingItemService;
+import com.example.microservice.service.TrainingItemSummaryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,8 @@ import java.time.LocalDate;
 public class TrainingItemController {
 
     private TrainingItemService trainingItemService;
+
+    private TrainingItemSummaryService trainingItemSummaryService;
 
     @PostMapping
     public void updateTrainingItem(@RequestParam(value = "trainerUserName") final String trainerUserName,
@@ -28,7 +31,7 @@ public class TrainingItemController {
 
     @GetMapping("/trainer")
     public TrainerWorkloadDTO getTrainerWorkload(@RequestParam(value = "trainerUserName") final String trainerUserName) {
-        return trainingItemService.getTrainerWorkload(trainerUserName);
+        return trainingItemSummaryService.getTrainerWorkload(trainerUserName);
     }
 
 }

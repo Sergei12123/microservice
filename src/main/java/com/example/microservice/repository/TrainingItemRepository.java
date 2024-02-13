@@ -13,5 +13,4 @@ public interface TrainingItemRepository extends MongoRepository<TrainingItem, St
         String trainerUserName, String trainerFirstName, String trainerLastName,
         boolean isActive, LocalDate trainingDate, Long trainingDuration);
 
-    List<TrainingItem> findAllByTrainerUserName(String trainerUserName);
 }

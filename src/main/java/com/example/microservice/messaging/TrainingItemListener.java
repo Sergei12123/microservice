@@ -4,6 +4,7 @@ import com.example.microservice.dto.TrainerWorkloadDTO;
 import com.example.microservice.entity.enums.ActionType;
 import com.example.microservice.messaging.dto.TrainingItemDTO;
 import com.example.microservice.service.TrainingItemService;
+import com.example.microservice.service.TrainingItemSummaryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -21,6 +22,8 @@ public class TrainingItemListener {
 
     private final TrainingItemService trainingItemService;
 
+    private final TrainingItemSummaryService trainingItemSummaryService;
+
     @RabbitListener(queues = QUEUE_TRAINING_ITEM_UPDATE)
     public void updateTrainingItem(@Payload TrainingItemDTO trainingItemDTO,
                                    @Header("actionType") ActionType actionType) {
@@ -37,7 +40,7 @@ public class TrainingItemListener {
 
     @RabbitListener(queues = QUEUE_TRAINING_ITEM_TRAINER_WORKLOAD)
     public TrainerWorkloadDTO getTrainerWorkload(@Payload String trainerUserName) {
-        return trainingItemService.getTrainerWorkload(trainerUserName);
+        return trainingItemSummaryService.getTrainerWorkload(trainerUserName);
     }
 
 }
