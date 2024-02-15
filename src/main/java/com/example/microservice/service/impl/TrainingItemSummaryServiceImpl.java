@@ -44,6 +44,7 @@ public class TrainingItemSummaryServiceImpl implements TrainingItemSummaryServic
                 } else {
                     trainingItemSummary.getWorkload().put(trainingDate.getYear(), Map.of(trainingDate.getMonthValue(), trainingDuration));
                 }
+                trainingItemSummaryRepository.save(trainingItemSummary);
             } else {
                 trainingItemSummaryRepository.save(TrainingItemSummary.builder()
                     .trainerUserName(trainerUserName)
@@ -63,6 +64,7 @@ public class TrainingItemSummaryServiceImpl implements TrainingItemSummaryServic
                         yearMap.put(trainingDate.getMonthValue(), yearMap.get(trainingDate.getMonthValue()) - trainingDuration);
                     }
                 }
+                trainingItemSummaryRepository.save(trainingItemSummary);
             }
         }
     }
