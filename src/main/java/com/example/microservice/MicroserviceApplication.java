@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableRabbit
 @EnableFeignClients
 @SpringBootApplication
-@EnableDiscoveryClient
 @EnableMongoRepositories
 public class MicroserviceApplication {
 
